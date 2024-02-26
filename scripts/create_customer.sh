@@ -1,21 +1,20 @@
-mpod=$(oc get pods --selector app=mysql --output name | awk -F/ '{print $NF}')
+#
+# Make sure to set the environment variables set before running this script.
+#
+# export GCP_MYSQL_INSTANCE=sqlinstance-sample-mysql
+# export GCP_MYSQL_DATABASE=sampledb
+# export GCP_MYSQL_USERNAME=userp1f
+# export GCP_MYSQL_PASSWORD=$(pwgen -c 16 -n 1)
+#
+####
 
-echo "Copying setup files into pod..."
-oc cp ./customer-table-create.sql $mpod:/tmp/customer-table-create.sql
-oc cp ./insert-customer-data.sql ${mpod}:/tmp/insert-customer-data.sql
 
 echo "Creating table(s)..."
-oc exec $mpod -- bash -c "mysql --user=root sampledb < /tmp/customer-table-create.sql"
+mysql --user=${GCP_MYSQL_USERNAME} --password=${GCP_MYSQL_PASSWORD} --host=${GCP_MYSQL_HOST} ${GCP_MYSQL_DATABASE} < ./customer-table-create.sql
 
 echo "Importing data..."
-oc exec $mpod -- bash -c "mysql --user=root < /tmp/insert-customer-data.sql"
+mysql --user=${GCP_MYSQL_USERNAME} --password=${GCP_MYSQL_PASSWORD} --host=${GCP_MYSQL_HOST} ${GCP_MYSQL_DATABASE}  < ./insert-customer-data.sql
 
 echo "Here is your table:"
-oc exec $mpod -- bash -c "mysql --user=root sampledb -e 'use sampledb; SELECT * FROM customer;'"
+mysql --user=${GCP_MYSQL_USERNAME} --password=${GCP_MYSQL_PASSWORD} --host=${GCP_MYSQL_HOST} ${GCP_MYSQL_DATABASE}  -e "use ${GCP_MYSQL_DATABASE}; SELECT * FROM customer;"
 
-# Temporary fix because MySQL 8.* client isn't secure in mysqljs Nodejs module
-echo "Setting user password..."
-oc exec $mpod -- bash -c "mysql --user=root -e 'ALTER USER '\''userBMN'\'' IDENTIFIED WITH mysql_native_password BY '\''vRUWhkydWOKdMDLd'\'';'"
-
-echo "Flushing privileges..."
-oc exec $mpod -- bash -c "mysql --user=root -e 'FLUSH PRIVILEGES;'"

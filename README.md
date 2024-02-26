@@ -1,38 +1,41 @@
 # mysql-openshift-ephemeral
-Demo: Creating an ephemeral instance of MySQL in OpenShift
+Demo: Creating an applicatipon that uses an MySQL isntance running on GCP.
 
-This repository is to accompany a blog post at developers.redhat.com that instructs how to create an ephemeral MySQL instance in OpenShift 4.x. This repo *can* be used standalone, but it really sings when used with the blog post.
+The original purpose of the repo that was forked was to accompany a blog post at developers.redhat.com that instructs how to create an ephemeral MySQL instance in OpenShift 4.x. But it has been modified to show how you can use an eternal (to the cluster) MySQL instance OSD cluster on GCP.
+
+*This is not a best practice or recommendation for how to set this up for production use.*
 
 Like everything else we do at Red Hat, it's open source and open to pull requests.
 
-## Create an OpenShift instance named "mysql"  
-`./openshift-install create cluster`  
+*Note:* The code in this repo contain the creation of the database the the code for the app. Because of this, the instructions will not go in to any detail on how to set up the OSD cluster or how to configure the Google Config Connector. These steps are there just for reference.
+
+## Create an OSD cluster
+https://docs.openshift.com/dedicated/osd_install_access_delete_cluster/creating-a-gcp-cluster.html
+ 
+## Install google config connector
+https://cloud.google.com/config-connector/docs/how-to/install-other-kubernetes
 
 ## Create a new project
-`oc new-project mysql-test`  
+`oc new-project google-test`
 
-## Create MySQL database
-`oc new-app mysql-ephemeral --name mysql`  
+## Create a managed SQL instance
+https://cloud.google.com/sdk/gcloud/reference/sql
 
 ## Populate database  
 
 **NOTE that you must change the user and password values in the following script before running it.**
 
-### Windows
-`$PROJECT-HOME/scripts/create-customer.ps1`  
-
-### Linux-based systems (including macOS)
 `$PROJECT-HOME/scripts/create-customer.sh`  
 
 ## Create the getCustomer service
-#### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' are determined by the values returned after you create the ephemeral MySQL application, above.  
+#### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' must be the credentials that you reate in your managed SQL in GCP, youare determined by the values returned after you create the ephemeral MySQL application, above.  
 
-`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomer --name getcustomer -e MYSQL_HOST=mysql -e MYSQL_DATABASE=sampledb -e MYSQL_USER=userP1F -e MYSQL_PASSWORD=eRwTuVSW1MhsIUHw`  
+`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomer --name getcustomer -e MYSQL_HOST=${GCP_MYSQL_HOST} -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} -e MYSQL_USER=${GCP_MYSQL_USER} -e MYSQL_PASSWORD=${GCP_MYSQL_PASSWORD}`  
 
 ## Create the getCustomerSummaryList service
-#### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' are determined by the values returned after you create the ephemeral MySQL application, above.  
+#### Note: The variables 'MYSQL_USERNAME' and 'MYSQL_PASSWORD' are determined by the values that you created you manageds SQL instance with and must the same that you use when running the create_customer.sh script above.  
 
-`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomerSummaryList --name getcustomersummarylist -e MYSQL_HOST=mysql -e MYSQL_DATABASE=sampledb -e MYSQL_USER=userP1F -e MYSQL_PASSWORD=eRwTuVSW1MhsIUHw`  
+`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomerSummaryList --name getcustomersummarylist -e MYSQL_HOST=${GCP_MYSQL_HOST} -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} -e MYSQL_USER=${GCP_MYSQL_USER} -e MYSQL_PASSWORD=${GCP_MYSQ_USER}`  
 
 ## Create the service "mvccustomer"
 This will pull a Linux image from a registry. This is being done to demonstrate the versatility of the OpenShift application build feature.
