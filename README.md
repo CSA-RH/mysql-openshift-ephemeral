@@ -22,10 +22,14 @@ https://cloud.google.com/sdk/gcloud/reference/sql
 
 **NOTE that you must change the user and password values in the following script before running it.**
 
-`$PROJECT-HOME/scripts/create-customer.sh`  
+```
+$PROJECT-HOME/scripts/create-customer.sh
+```
 
 ## Create a new project
-`oc new-project google-test`
+```
+oc new-project google-test
+```
 
 ## Create the getCustomer service
 #### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' must be the credentials that you reate in your managed SQL in GCP, youare determined by the values returned after you create the ephemeral MySQL application, above.  
@@ -63,11 +67,15 @@ oc new-app --name mvccustomer \
 ```
 
 ## Expose the mvccustomer web site
-`oc expose service mvccustomer --insecure-skip-tls-verify=false`
+```
+oc expose service mvccustomer --insecure-skip-tls-verify=false
+```
 
 ## Test it
 Get the route, then open it in your browser:  
-`oc get routes`
+```
+oc get routes
+```
 
 
 ### END ###
