@@ -30,17 +30,37 @@ https://cloud.google.com/sdk/gcloud/reference/sql
 ## Create the getCustomer service
 #### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' must be the credentials that you reate in your managed SQL in GCP, youare determined by the values returned after you create the ephemeral MySQL application, above.  
 
-`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomer --name getcustomer -e MYSQL_HOST=${GCP_MYSQL_HOST} -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} -e MYSQL_USER=${GCP_MYSQL_USER} -e MYSQL_PASSWORD=${GCP_MYSQL_PASSWORD}`  
+```
+oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git \
+  --context-dir=src/getCustomer \
+  --name getcustomer \
+  -e MYSQL_HOST=${GCP_MYSQL_HOST} \
+  -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} \
+  -e MYSQL_USER=${GCP_MYSQL_USER} \
+  -e MYSQL_PASSWORD=${GCP_MYSQL_PASSWORD}
+```
 
 ## Create the getCustomerSummaryList service
 #### Note: The variables 'MYSQL_USERNAME' and 'MYSQL_PASSWORD' are determined by the values that you created you manageds SQL instance with and must the same that you use when running the create_customer.sh script above.  
 
-`oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git --context-dir=src/getCustomerSummaryList --name getcustomersummarylist -e MYSQL_HOST=${GCP_MYSQL_HOST} -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} -e MYSQL_USER=${GCP_MYSQL_USER} -e MYSQL_PASSWORD=${GCP_MYSQ_USER}`  
+```
+oc new-app https://github.com/redhat-developer-demos/mysql-openshift-ephemeral.git \
+  --context-dir=src/getCustomerSummaryList --name getcustomersummarylist \
+  -e MYSQL_HOST=${GCP_MYSQL_HOST} \ 
+  -e MYSQL_DATABASE=${GCP_MYSQL_DATABASE} \ 
+  -e MYSQL_USER=${GCP_MYSQL_USER} \
+  -e MYSQL_PASSWORD=${GCP_MYSQ_USER}
+```
 
 ## Create the service "mvccustomer"
 This will pull a Linux image from a registry. This is being done to demonstrate the versatility of the OpenShift application build feature.
 
-`oc new-app --name mvccustomer --docker-image=quay.io/donschenck/mvccustomer:latest -e GET_CUSTOMER_SUMMARY_LIST_URI="http://getcustomersummarylist:8080/customers" -e GET_CUSTOMER_URI="http://getcustomer:8080/customer"`
+```
+oc new-app --name mvccustomer \ 
+  --docker-image=quay.io/donschenck/mvccustomer:latest \
+  -e GET_CUSTOMER_SUMMARY_LIST_URI="http://getcustomersummarylist:8080/customers" \
+  -e GET_CUSTOMER_URI="http://getcustomer:8080/customer"
+```
 
 ## Expose the mvccustomer web site
 `oc expose service mvccustomer --insecure-skip-tls-verify=false`
