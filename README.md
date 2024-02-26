@@ -1,9 +1,9 @@
 # mysql-openshift-ephemeral
-Demo: Creating an applicatipon that uses an MySQL isntance running on GCP.
+Demo: Creating an applicatipon that uses an MySQL instance running on GCP.
 
-The original purpose of the repo that was forked was to accompany a blog post at developers.redhat.com that instructs how to create an ephemeral MySQL instance in OpenShift 4.x. But it has been modified to show how you can use an eternal (to the cluster) MySQL instance OSD cluster on GCP.
+The original purpose of the repo from which I forked this, was to accompany a blog post at developers.redhat.com that instructs how to create an ephemeral MySQL instance in OpenShift 4.x. I have modified the content and instructions to work with an external MySQL instance.
 
-*This is not a best practice or recommendation for how to set this up for production use.*
+**This is not a best practice nor is it a recommendation for how to set this up in any production system.**
 
 Like everything else we do at Red Hat, it's open source and open to pull requests.
 
@@ -15,9 +15,6 @@ https://docs.openshift.com/dedicated/osd_install_access_delete_cluster/creating-
 ## Install google config connector
 https://cloud.google.com/config-connector/docs/how-to/install-other-kubernetes
 
-## Create a new project
-`oc new-project google-test`
-
 ## Create a managed SQL instance
 https://cloud.google.com/sdk/gcloud/reference/sql
 
@@ -26,6 +23,9 @@ https://cloud.google.com/sdk/gcloud/reference/sql
 **NOTE that you must change the user and password values in the following script before running it.**
 
 `$PROJECT-HOME/scripts/create-customer.sh`  
+
+## Create a new project
+`oc new-project google-test`
 
 ## Create the getCustomer service
 #### Note: The variables 'MYSQL_USER' and 'MYSQL_PASSWORD' must be the credentials that you reate in your managed SQL in GCP, youare determined by the values returned after you create the ephemeral MySQL application, above.  
