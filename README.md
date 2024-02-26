@@ -3,7 +3,7 @@ Demo: Creating an applicatipon that uses an MySQL instance running on GCP.
 
 The original purpose of the repo from which I forked this, was to accompany a blog post at developers.redhat.com that instructs how to create an ephemeral MySQL instance in OpenShift 4.x. I have modified the content and instructions to work with an external MySQL instance.
 
-**This is not a best practice nor is it a recommendation for how to set this up in any production system. **
+**This is not a best practice nor is it a recommendation for how to set this up in any production system.**
 
 Like everything else we do at Red Hat, it's open source and open to pull requests.
 
